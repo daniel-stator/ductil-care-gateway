@@ -180,7 +180,7 @@ function LoginPage() {
                   id="email"
                   type="email"
                   autoComplete="email"
-                  placeholder={perfil === "recepcao" ? "recepcao@ductil.com.br" : "seu.nome@ductil.com.br"}
+                  placeholder="seuemail@email.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   aria-invalid={!!erros.email}
