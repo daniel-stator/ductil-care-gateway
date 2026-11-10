@@ -123,7 +123,7 @@ export function ClienteFormDialog({
               />
             </Campo>
           </div>
-          <Campo id="email-cliente" label="E-mail (opcional)" erro={erros.email}>
+          <Campo id="email-cliente" label="E-mail" erro={erros.email}>
             <Input
               id="email-cliente"
               type="email"

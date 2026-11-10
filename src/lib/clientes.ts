@@ -1,6 +1,8 @@
 import { useSyncExternalStore } from "react";
 import { z } from "zod";
 
+import { PSICOLOGOS, motivoBloqueio, type PedidoConsulta } from "./agenda";
+
 export type StatusConsulta = "realizada" | "faltou" | "cancelada" | "agendada";
 
 export interface Consulta {
@@ -88,8 +90,9 @@ export const clienteSchema = z.object({
   email: z
     .string()
     .trim()
-    .max(255)
-    .refine((v) => v === "" || z.string().email().safeParse(v).success, "E-mail inválido"),
+    .min(1, "Informe o e-mail")
+    .max(255, "E-mail muito longo")
+    .email("E-mail inválido"),
 });
 
 export type DadosCliente = z.infer<typeof clienteSchema>;
@@ -101,7 +104,7 @@ export function cpfDuplicado(lista: Cliente[], cpf: string, ignorarId?: string) 
 
 /* ---------- Dados de exemplo ---------- */
 
-const PSI = ["Dra. Helena Prado", "Dr. Rafael Moura", "Dra. Beatriz Lins"] as const;
+const PSI = PSICOLOGOS;
 
 const iniciais: Cliente[] = [
   {
@@ -115,6 +118,7 @@ const iniciais: Cliente[] = [
       { id: "c1-2", data: "2026-10-28", hora: "09:00", psicologo: PSI[0], status: "realizada" },
       { id: "c1-3", data: "2026-10-21", hora: "09:00", psicologo: PSI[0], status: "faltou" },
       { id: "c1-4", data: "2026-11-18", hora: "09:00", psicologo: PSI[0], status: "agendada" },
+      { id: "c1-5", data: "2026-11-11", hora: "09:00", psicologo: PSI[0], status: "agendada" },
     ],
   },
   {
@@ -124,9 +128,10 @@ const iniciais: Cliente[] = [
     telefone: "(11) 97654-1122",
     email: "bruno.alves@email.com",
     consultas: [
-      { id: "c2-1", data: "2026-11-06", hora: "14:30", psicologo: PSI[1], status: "realizada" },
-      { id: "c2-2", data: "2026-10-30", hora: "14:30", psicologo: PSI[1], status: "cancelada", observacao: "Cliente viajou" },
-      { id: "c2-3", data: "2026-10-23", hora: "14:30", psicologo: PSI[1], status: "realizada" },
+      { id: "c2-1", data: "2026-11-06", hora: "14:00", psicologo: PSI[1], status: "realizada" },
+      { id: "c2-2", data: "2026-10-30", hora: "14:00", psicologo: PSI[1], status: "cancelada", observacao: "Cliente viajou" },
+      { id: "c2-3", data: "2026-10-23", hora: "14:00", psicologo: PSI[1], status: "realizada" },
+      { id: "c2-4", data: "2026-11-13", hora: "14:00", psicologo: PSI[1], status: "agendada" },
     ],
   },
   {
@@ -138,6 +143,7 @@ const iniciais: Cliente[] = [
     consultas: [
       { id: "c3-1", data: "2026-09-15", hora: "18:00", psicologo: PSI[2], status: "realizada" },
       { id: "c3-2", data: "2026-11-12", hora: "18:00", psicologo: PSI[2], status: "agendada" },
+      { id: "c3-3", data: "2026-11-10", hora: "17:00", psicologo: PSI[2], status: "agendada" },
     ],
   },
   {
@@ -145,8 +151,9 @@ const iniciais: Cliente[] = [
     nome: "Diego Martins Costa",
     cpf: "996.030.824-30",
     telefone: "(11) 3456-7890",
-    email: "",
+    email: "diego.costa@email.com",
     consultas: [
+      { id: "c4-4", data: "2026-11-16", hora: "10:00", psicologo: PSI[0], status: "agendada" },
       { id: "c4-1", data: "2026-11-09", hora: "10:00", psicologo: PSI[0], status: "realizada" },
       { id: "c4-2", data: "2026-11-02", hora: "10:00", psicologo: PSI[0], status: "realizada" },
       { id: "c4-3", data: "2026-10-26", hora: "10:00", psicologo: PSI[0], status: "realizada" },
@@ -158,7 +165,9 @@ const iniciais: Cliente[] = [
     cpf: "628.194.821-12",
     telefone: "(11) 99001-2233",
     email: "eduarda.nogueira@email.com",
-    consultas: [],
+    consultas: [
+      { id: "c5-1", data: "2026-11-11", hora: "15:00", psicologo: PSI[2], status: "agendada" },
+    ],
   },
   {
     id: "c6",
@@ -169,6 +178,7 @@ const iniciais: Cliente[] = [
     consultas: [
       { id: "c6-1", data: "2026-10-14", hora: "16:00", psicologo: PSI[1], status: "realizada" },
       { id: "c6-2", data: "2026-10-07", hora: "16:00", psicologo: PSI[1], status: "realizada" },
+      { id: "c6-3", data: "2026-11-12", hora: "16:00", psicologo: PSI[1], status: "agendada" },
     ],
   },
 ];
@@ -218,4 +228,23 @@ export function atualizarCliente(id: string, dados: DadosCliente) {
       : c,
   );
   emitir();
+}
+
+export function marcarConsulta(pedido: PedidoConsulta): { ok: true } | { ok: false; erro: string } {
+  const erro = motivoBloqueio(clientes, pedido);
+  if (erro) return { ok: false, erro };
+  const { clienteId, data, hora, psicologo } = pedido;
+  clientes = clientes.map((c) =>
+    c.id === clienteId
+      ? {
+          ...c,
+          consultas: [
+            ...c.consultas,
+            { id: `${clienteId}-${Date.now()}`, data, hora, psicologo, status: "agendada" },
+          ],
+        }
+      : c,
+  );
+  emitir();
+  return { ok: true };
 }
