@@ -28,3 +28,6 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+## Project rules
+- Reception area lives under `/recepcao` (layout with sidebar in `src/routes/recepcao.tsx`); client data and its rules (CPF check, last visit) live in `src/lib/clientes.ts`. Why: one place to swap the in-memory sample store for the real database later.

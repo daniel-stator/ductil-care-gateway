@@ -10,33 +10,80 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as RecepcaoRouteImport } from './routes/recepcao'
+import { Route as RecepcaoIndexRouteImport } from './routes/recepcao.index'
+import { Route as RecepcaoAgendamentoRouteImport } from './routes/recepcao.agendamento'
+import { Route as RecepcaoClientesRouteImport } from './routes/recepcao.clientes'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RecepcaoRoute = RecepcaoRouteImport.update({
+  id: '/recepcao',
+  path: '/recepcao',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RecepcaoIndexRoute = RecepcaoIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => RecepcaoRoute,
+} as any)
+const RecepcaoAgendamentoRoute = RecepcaoAgendamentoRouteImport.update({
+  id: '/agendamento',
+  path: '/agendamento',
+  getParentRoute: () => RecepcaoRoute,
+} as any)
+const RecepcaoClientesRoute = RecepcaoClientesRouteImport.update({
+  id: '/clientes',
+  path: '/clientes',
+  getParentRoute: () => RecepcaoRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/recepcao': typeof RecepcaoRouteWithChildren
+  '/recepcao/agendamento': typeof RecepcaoAgendamentoRoute
+  '/recepcao/clientes': typeof RecepcaoClientesRoute
+  '/recepcao/': typeof RecepcaoIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/recepcao/agendamento': typeof RecepcaoAgendamentoRoute
+  '/recepcao/clientes': typeof RecepcaoClientesRoute
+  '/recepcao': typeof RecepcaoIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/recepcao': typeof RecepcaoRouteWithChildren
+  '/recepcao/agendamento': typeof RecepcaoAgendamentoRoute
+  '/recepcao/clientes': typeof RecepcaoClientesRoute
+  '/recepcao/': typeof RecepcaoIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/recepcao'
+    | '/recepcao/agendamento'
+    | '/recepcao/clientes'
+    | '/recepcao/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/recepcao/agendamento' | '/recepcao/clientes' | '/recepcao'
+  id:
+    | '__root__'
+    | '/'
+    | '/recepcao'
+    | '/recepcao/agendamento'
+    | '/recepcao/clientes'
+    | '/recepcao/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  RecepcaoRoute: typeof RecepcaoRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +95,56 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/recepcao': {
+      id: '/recepcao'
+      path: '/recepcao'
+      fullPath: '/recepcao'
+      preLoaderRoute: typeof RecepcaoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/recepcao/': {
+      id: '/recepcao/'
+      path: '/'
+      fullPath: '/recepcao/'
+      preLoaderRoute: typeof RecepcaoIndexRouteImport
+      parentRoute: typeof RecepcaoRoute
+    }
+    '/recepcao/agendamento': {
+      id: '/recepcao/agendamento'
+      path: '/agendamento'
+      fullPath: '/recepcao/agendamento'
+      preLoaderRoute: typeof RecepcaoAgendamentoRouteImport
+      parentRoute: typeof RecepcaoRoute
+    }
+    '/recepcao/clientes': {
+      id: '/recepcao/clientes'
+      path: '/clientes'
+      fullPath: '/recepcao/clientes'
+      preLoaderRoute: typeof RecepcaoClientesRouteImport
+      parentRoute: typeof RecepcaoRoute
+    }
   }
 }
 
+interface RecepcaoRouteChildren {
+  RecepcaoAgendamentoRoute: typeof RecepcaoAgendamentoRoute
+  RecepcaoClientesRoute: typeof RecepcaoClientesRoute
+  RecepcaoIndexRoute: typeof RecepcaoIndexRoute
+}
+
+const RecepcaoRouteChildren: RecepcaoRouteChildren = {
+  RecepcaoAgendamentoRoute: RecepcaoAgendamentoRoute,
+  RecepcaoClientesRoute: RecepcaoClientesRoute,
+  RecepcaoIndexRoute: RecepcaoIndexRoute,
+}
+
+const RecepcaoRouteWithChildren = RecepcaoRoute._addFileChildren(
+  RecepcaoRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  RecepcaoRoute: RecepcaoRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

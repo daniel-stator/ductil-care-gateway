@@ -1,0 +1,79 @@
+import { Badge } from "@/components/ui/badge";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
+import {
+  formatarData,
+  ordenarConsultas,
+  statusLabel,
+  type Cliente,
+  type StatusConsulta,
+} from "@/lib/clientes";
+import { cn } from "@/lib/utils";
+
+const estiloStatus: Record<StatusConsulta, string> = {
+  realizada: "border-transparent bg-secondary text-secondary-foreground",
+  agendada: "border-transparent bg-gradient-gold text-primary-foreground",
+  faltou: "border-destructive/40 bg-transparent text-destructive",
+  cancelada: "border-border bg-muted text-muted-foreground",
+};
+
+export function HistoricoSheet({
+  cliente,
+  onFechar,
+}: {
+  cliente: Cliente | null;
+  onFechar: () => void;
+}) {
+  const consultas = cliente ? ordenarConsultas(cliente.consultas) : [];
+  const realizadas = consultas.filter((c) => c.status === "realizada").length;
+
+  return (
+    <Sheet open={!!cliente} onOpenChange={(v) => !v && onFechar()}>
+      <SheetContent className="w-full overflow-y-auto bg-background sm:max-w-md">
+        <SheetHeader className="text-left">
+          <p className="text-xs uppercase tracking-[0.3em] text-gold-deep">Histórico de consultas</p>
+          <SheetTitle className="font-display text-3xl font-medium">{cliente?.nome}</SheetTitle>
+          <SheetDescription>
+            {consultas.length === 0
+              ? "Nenhuma consulta registrada."
+              : `${consultas.length} consulta(s) · ${realizadas} realizada(s)`}
+          </SheetDescription>
+        </SheetHeader>
+
+        {consultas.length > 0 && (
+          <ol className="mt-8 space-y-0 border-l border-border pl-6">
+            {consultas.map((c) => (
+              <li key={c.id} className="relative pb-6 last:pb-0">
+                <span
+                  className={cn(
+                    "absolute -left-[1.85rem] top-1.5 size-2.5 rounded-full ring-4 ring-background",
+                    c.status === "agendada" ? "bg-gold" : "bg-foreground/60",
+                  )}
+                />
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="font-medium text-foreground">
+                      {formatarData(c.data)} <span className="text-muted-foreground">· {c.hora}</span>
+                    </p>
+                    <p className="text-sm text-muted-foreground">{c.psicologo}</p>
+                    {c.observacao && (
+                      <p className="mt-1 text-sm italic text-muted-foreground">{c.observacao}</p>
+                    )}
+                  </div>
+                  <Badge variant="outline" className={cn("shrink-0", estiloStatus[c.status])}>
+                    {statusLabel[c.status]}
+                  </Badge>
+                </div>
+              </li>
+            ))}
+          </ol>
+        )}
+      </SheetContent>
+    </Sheet>
+  );
+}

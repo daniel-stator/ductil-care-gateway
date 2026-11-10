@@ -1,10 +1,11 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import { CalendarCheck, Eye, EyeOff, HeartHandshake, Lock, Mail } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
 
 import ambiente from "@/assets/clinica-ambiente.jpg";
+import { Marca } from "@/components/Marca";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -53,23 +54,8 @@ const loginSchema = z.object({
   senha: z.string().min(6, "A senha deve ter pelo menos 6 caracteres").max(128),
 });
 
-function Marca({ className }: { className?: string }) {
-  return (
-    <div className={cn("flex items-center gap-3", className)}>
-      <span className="grid size-11 place-items-center rounded-full border border-gold/70 font-display text-2xl italic text-gold">
-        D
-      </span>
-      <span className="leading-none">
-        <span className="block font-display text-2xl tracking-wide">Dúctil</span>
-        <span className="mt-1 block text-[0.65rem] uppercase tracking-[0.35em] opacity-70">
-          Psicologia
-        </span>
-      </span>
-    </div>
-  );
-}
-
 function LoginPage() {
+  const navigate = useNavigate();
   const [perfil, setPerfil] = useState<Perfil>("recepcao");
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
@@ -91,7 +77,11 @@ function LoginPage() {
     setEnviando(true);
     setTimeout(() => {
       setEnviando(false);
-      toast(`Acesso ${perfil === "recepcao" ? "da recepção" : "do psicólogo"}`, {
+      if (perfil === "recepcao") {
+        navigate({ to: "/recepcao/clientes" });
+        return;
+      }
+      toast("Acesso do psicólogo", {
         description: "Tela pronta. O acesso real será ativado quando as contas forem conectadas.",
       });
     }, 700);
