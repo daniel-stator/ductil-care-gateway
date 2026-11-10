@@ -34,17 +34,15 @@ type Perfil = "recepcao" | "psicologo";
 
 const perfis: Record<
   Perfil,
-  { titulo: string; descricao: string; saudacao: string; icon: typeof CalendarCheck }
+  { titulo: string; saudacao: string; icon: typeof CalendarCheck }
 > = {
   recepcao: {
     titulo: "Recepção",
-    descricao: "Agenda, pacientes e pagamentos",
-    saudacao: "Bem-vinda de volta à recepção",
+    saudacao: "Bem-vindo(a) de volta à recepção",
     icon: CalendarCheck,
   },
   psicologo: {
     titulo: "Psicólogo(a)",
-    descricao: "Sessões, prontuários e evolução",
     saudacao: "Bem-vindo(a) ao seu consultório",
     icon: HeartHandshake,
   },
@@ -167,17 +165,7 @@ function LoginPage() {
                   >
                     <Icon className="size-4" />
                   </span>
-                  <span>
-                    <span className="block font-medium">{p.titulo}</span>
-                    <span
-                      className={cn(
-                        "mt-0.5 block text-xs leading-snug",
-                        ativo ? "opacity-70" : "text-muted-foreground",
-                      )}
-                    >
-                      {p.descricao}
-                    </span>
-                  </span>
+                  <span className="block font-medium">{p.titulo}</span>
                 </button>
               );
             })}
