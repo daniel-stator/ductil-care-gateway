@@ -77,13 +77,7 @@ function LoginPage() {
     setEnviando(true);
     setTimeout(() => {
       setEnviando(false);
-      if (perfil === "recepcao") {
-        navigate({ to: "/recepcao/clientes" });
-        return;
-      }
-      toast("Acesso do psicólogo", {
-        description: "Tela pronta. O acesso real será ativado quando as contas forem conectadas.",
-      });
+      navigate({ to: perfil === "recepcao" ? "/recepcao/clientes" : "/psicologo" });
     }, 700);
   }
 

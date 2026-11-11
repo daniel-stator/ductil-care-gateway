@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PsicologoRouteImport } from './routes/psicologo'
 import { Route as RecepcaoRouteImport } from './routes/recepcao'
 import { Route as RecepcaoIndexRouteImport } from './routes/recepcao.index'
 import { Route as RecepcaoAgendamentoRouteImport } from './routes/recepcao.agendamento'
@@ -18,6 +19,11 @@ import { Route as RecepcaoClientesRouteImport } from './routes/recepcao.clientes
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PsicologoRoute = PsicologoRouteImport.update({
+  id: '/psicologo',
+  path: '/psicologo',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RecepcaoRoute = RecepcaoRouteImport.update({
@@ -43,6 +49,7 @@ const RecepcaoClientesRoute = RecepcaoClientesRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/psicologo': typeof PsicologoRoute
   '/recepcao': typeof RecepcaoRouteWithChildren
   '/recepcao/agendamento': typeof RecepcaoAgendamentoRoute
   '/recepcao/clientes': typeof RecepcaoClientesRoute
@@ -50,6 +57,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/psicologo': typeof PsicologoRoute
   '/recepcao/agendamento': typeof RecepcaoAgendamentoRoute
   '/recepcao/clientes': typeof RecepcaoClientesRoute
   '/recepcao': typeof RecepcaoIndexRoute
@@ -57,6 +65,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/psicologo': typeof PsicologoRoute
   '/recepcao': typeof RecepcaoRouteWithChildren
   '/recepcao/agendamento': typeof RecepcaoAgendamentoRoute
   '/recepcao/clientes': typeof RecepcaoClientesRoute
@@ -66,15 +75,22 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/psicologo'
     | '/recepcao'
     | '/recepcao/agendamento'
     | '/recepcao/clientes'
     | '/recepcao/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/recepcao/agendamento' | '/recepcao/clientes' | '/recepcao'
+  to:
+    | '/'
+    | '/psicologo'
+    | '/recepcao/agendamento'
+    | '/recepcao/clientes'
+    | '/recepcao'
   id:
     | '__root__'
     | '/'
+    | '/psicologo'
     | '/recepcao'
     | '/recepcao/agendamento'
     | '/recepcao/clientes'
@@ -83,6 +99,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  PsicologoRoute: typeof PsicologoRoute
   RecepcaoRoute: typeof RecepcaoRouteWithChildren
 }
 
@@ -93,6 +110,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/psicologo': {
+      id: '/psicologo'
+      path: '/psicologo'
+      fullPath: '/psicologo'
+      preLoaderRoute: typeof PsicologoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/recepcao': {
@@ -144,6 +168,7 @@ const RecepcaoRouteWithChildren = RecepcaoRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  PsicologoRoute: PsicologoRoute,
   RecepcaoRoute: RecepcaoRouteWithChildren,
 }
 export const routeTree = rootRouteImport

@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import {
   clienteSchema,
   cpfDuplicado,
+  dadosDoCliente,
   formatarCpf,
   formatarTelefone,
   type Cliente,
@@ -22,7 +23,16 @@ import {
 
 type Erros = { [K in keyof DadosCliente]?: string | undefined };
 
-const vazio: DadosCliente = { nome: "", cpf: "", telefone: "", email: "" };
+const vazio: DadosCliente = {
+  nome: "",
+  cpf: "",
+  telefone: "",
+  email: "",
+  nascimento: "",
+  emergenciaNome: "",
+  emergenciaParentesco: "",
+  emergenciaTelefone: "",
+};
 
 export function ClienteFormDialog({
   aberto,
@@ -44,11 +54,7 @@ export function ClienteFormDialog({
 
   useEffect(() => {
     if (aberto) {
-      setDados(
-        cliente
-          ? { nome: cliente.nome, cpf: cliente.cpf, telefone: cliente.telefone, email: cliente.email }
-          : vazio,
-      );
+      setDados(cliente ? dadosDoCliente(cliente) : vazio);
       setErros({});
     }
   }, [aberto, cliente]);
@@ -68,6 +74,10 @@ export function ClienteFormDialog({
         cpf: f.cpf?.[0],
         telefone: f.telefone?.[0],
         email: f.email?.[0],
+        nascimento: f.nascimento?.[0],
+        emergenciaNome: f.emergenciaNome?.[0],
+        emergenciaParentesco: f.emergenciaParentesco?.[0],
+        emergenciaTelefone: f.emergenciaTelefone?.[0],
       });
       return;
     }
@@ -80,7 +90,7 @@ export function ClienteFormDialog({
 
   return (
     <Dialog open={aberto} onOpenChange={onAbertoChange}>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="max-h-[92vh] overflow-y-auto sm:max-w-lg">
         <DialogHeader>
           <DialogTitle className="font-display text-3xl font-medium">
             {editando ? "Editar cliente" : "Novo cliente"}
@@ -134,6 +144,51 @@ export function ClienteFormDialog({
               maxLength={255}
             />
           </Campo>
+          <Campo id="nascimento" label="Data de nascimento (opcional)" erro={erros.nascimento}>
+            <Input
+              id="nascimento"
+              type="date"
+              value={dados.nascimento}
+              onChange={(e) => campo("nascimento", e.target.value)}
+              aria-invalid={!!erros.nascimento}
+              className="sm:max-w-[12rem]"
+            />
+          </Campo>
+
+          <fieldset className="space-y-4 rounded-md border border-border p-4">
+            <legend className="px-1 text-sm font-medium">Contato de emergência (opcional)</legend>
+            <div className="grid gap-4 sm:grid-cols-[1fr_9rem]">
+              <Campo id="emergencia-nome" label="Nome" erro={erros.emergenciaNome}>
+                <Input
+                  id="emergencia-nome"
+                  value={dados.emergenciaNome}
+                  onChange={(e) => campo("emergenciaNome", e.target.value)}
+                  placeholder="Nome do contato"
+                  maxLength={120}
+                />
+              </Campo>
+              <Campo id="emergencia-parentesco" label="Parentesco" erro={erros.emergenciaParentesco}>
+                <Input
+                  id="emergencia-parentesco"
+                  value={dados.emergenciaParentesco}
+                  onChange={(e) => campo("emergenciaParentesco", e.target.value)}
+                  placeholder="Ex.: Mãe"
+                  maxLength={40}
+                />
+              </Campo>
+            </div>
+            <Campo id="emergencia-telefone" label="Telefone" erro={erros.emergenciaTelefone}>
+              <Input
+                id="emergencia-telefone"
+                inputMode="tel"
+                value={dados.emergenciaTelefone}
+                onChange={(e) => campo("emergenciaTelefone", formatarTelefone(e.target.value))}
+                placeholder="(00) 00000-0000"
+                aria-invalid={!!erros.emergenciaTelefone}
+                className="sm:max-w-[12rem]"
+              />
+            </Campo>
+          </fieldset>
 
           <DialogFooter className="pt-2">
             <Button type="button" variant="outline" onClick={() => onAbertoChange(false)}>

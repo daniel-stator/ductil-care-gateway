@@ -1,4 +1,4 @@
-import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/StatusBadge";
 import {
   Sheet,
   SheetContent,
@@ -6,21 +6,8 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import {
-  formatarData,
-  ordenarConsultas,
-  statusLabel,
-  type Cliente,
-  type StatusConsulta,
-} from "@/lib/clientes";
+import { formatarData, ordenarConsultas, type Cliente } from "@/lib/clientes";
 import { cn } from "@/lib/utils";
-
-const estiloStatus: Record<StatusConsulta, string> = {
-  realizada: "border-transparent bg-secondary text-secondary-foreground",
-  agendada: "border-transparent bg-gradient-gold text-primary-foreground",
-  faltou: "border-destructive/40 bg-transparent text-destructive",
-  cancelada: "border-border bg-muted text-muted-foreground",
-};
 
 export function HistoricoSheet({
   cliente,
@@ -65,9 +52,7 @@ export function HistoricoSheet({
                       <p className="mt-1 text-sm italic text-muted-foreground">{c.observacao}</p>
                     )}
                   </div>
-                  <Badge variant="outline" className={cn("shrink-0", estiloStatus[c.status])}>
-                    {statusLabel[c.status]}
-                  </Badge>
+                  <StatusBadge status={c.status} />
                 </div>
               </li>
             ))}
