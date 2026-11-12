@@ -301,7 +301,7 @@ const iniciais: Cliente[] = [
         anotacao: "Primeira sessão. Queixa principal: esgotamento profissional. Levantamento de histórico.",
       },
       { id: "c7-2", data: "2026-10-28", hora: "14:00", psicologo: PSI[0], status: "realizada" },
-      { id: "c7-3", data: "2026-11-11", hora: "14:00", psicologo: PSI[0], status: "agendada" },
+      { id: "c7-3", data: "2026-11-12", hora: "16:00", psicologo: PSI[0], status: "agendada" },
       { id: "c7-4", data: "2026-11-25", hora: "14:00", psicologo: PSI[0], status: "agendada" },
     ],
   },

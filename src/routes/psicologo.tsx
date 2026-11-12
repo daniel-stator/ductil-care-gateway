@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { diaDeAtendimento, paraISO } from "@/lib/agenda";
 import { useClientes } from "@/lib/clientes";
 import { PSICOLOGO_LOGADO, pacientesDo, sessoesAnteriores, sessoesDoDia } from "@/lib/prontuario";
-import { cn } from "@/lib/utils";
+import { cn, primeiraMaiuscula } from "@/lib/utils";
 
 export const Route = createFileRoute("/psicologo")({
   head: () => ({
@@ -113,9 +113,9 @@ function Painel() {
             </Button>
             <div className="text-center">
               <h2 className="font-display text-xl font-medium">Agenda</h2>
-              <p className="text-xs capitalize text-muted-foreground">
+              <p className="text-xs text-muted-foreground">
                 {ehHoje ? "Hoje · " : ""}
-                {format(dia, "EEE, d 'de' MMM", { locale: ptBR })}
+                {primeiraMaiuscula(format(dia, "EEE, d 'de' MMM", { locale: ptBR }))}
               </p>
             </div>
             <Button variant="ghost" size="icon" aria-label="Próximo dia" onClick={() => setDia((d) => addDays(d, 1))}>

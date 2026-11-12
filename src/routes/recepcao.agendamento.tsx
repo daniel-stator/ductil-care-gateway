@@ -19,7 +19,7 @@ import {
   paraISO,
 } from "@/lib/agenda";
 import { useClientes } from "@/lib/clientes";
-import { cn } from "@/lib/utils";
+import { cn, primeiraMaiuscula } from "@/lib/utils";
 
 export const Route = createFileRoute("/recepcao/agendamento")({
   head: () => ({
@@ -115,8 +115,8 @@ function Agenda() {
 
         <section className="min-w-0 rounded-lg border border-border bg-card shadow-soft">
           <header className="flex flex-wrap items-baseline justify-between gap-2 border-b border-border px-5 py-4">
-            <h2 className="font-display text-2xl font-medium capitalize">
-              {format(dia, "EEEE, d 'de' MMMM", { locale: ptBR })}
+            <h2 className="font-display text-2xl font-medium">
+              {primeiraMaiuscula(format(dia, "EEEE, d 'de' MMMM", { locale: ptBR }))}
             </h2>
             {atende && (
               <p className="text-sm text-muted-foreground">

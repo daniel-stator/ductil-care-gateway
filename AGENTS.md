@@ -31,3 +31,5 @@ use the editor.
 
 ## Project rules
 - Reception area lives under `/recepcao` (layout with sidebar in `src/routes/recepcao.tsx`); client data and its rules (CPF check, last visit) live in `src/lib/clientes.ts`. Why: one place to swap the in-memory sample store for the real database later.
+- Psychologist area is `/psicologo` (single page, no sidebar); prontuário rules (who may annotate which session, session history) live in `src/lib/prontuario.ts`, scheduling rules in `src/lib/agenda.ts`. Why: keeps rules testable and separate from UI; session notes must stay out of reception screens.
+- Pages whose output depends on the current clock (agenda, painel) render inside `<ClientOnly>`. Why: server runs in UTC, so SSR would mismatch the user's local time.

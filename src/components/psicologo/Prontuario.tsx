@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { deISO } from "@/lib/agenda";
 import { formatarData, idade, salvarAnotacao, type Cliente, type Consulta } from "@/lib/clientes";
 import { motivoNaoAnotar } from "@/lib/prontuario";
-import { cn } from "@/lib/utils";
+import { cn, primeiraMaiuscula } from "@/lib/utils";
 
 function iniciais(nome: string) {
   const partes = nome.split(" ").filter(Boolean);
@@ -120,8 +120,8 @@ export function HistoricoLateral({
                 >
                   <span className="min-w-0 flex-1">
                     <span className="block font-medium tabular-nums text-foreground">{formatarData(s.data)}</span>
-                    <span className="block text-xs capitalize text-muted-foreground">
-                      {format(deISO(s.data), "EEEE", { locale: ptBR })} · {s.hora}
+                    <span className="block text-xs text-muted-foreground">
+                      {primeiraMaiuscula(format(deISO(s.data), "EEE", { locale: ptBR }))} · {s.hora}
                     </span>
                   </span>
                   <span className="flex flex-col items-end gap-1">
@@ -177,8 +177,9 @@ export function EditorEvolucao({
       <header className="flex flex-wrap items-center justify-between gap-2 border-b border-border px-5 py-3">
         <div>
           <h3 className="font-display text-xl font-medium">Evolução da sessão</h3>
-          <p className="text-sm capitalize text-muted-foreground">
-            {format(deISO(consulta.data), "EEEE, d 'de' MMMM 'de' yyyy", { locale: ptBR })} · {consulta.hora}
+          <p className="text-sm text-muted-foreground">
+            {primeiraMaiuscula(format(deISO(consulta.data), "EEEE, d 'de' MMMM 'de' yyyy", { locale: ptBR }))} ·{" "}
+            {consulta.hora}
           </p>
         </div>
         <StatusBadge status={consulta.status} />
