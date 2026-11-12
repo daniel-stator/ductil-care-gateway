@@ -219,7 +219,7 @@ function LoginPage() {
           </form>
 
           <p className="mt-10 text-center text-xs text-muted-foreground">
-            Acesso exclusivo para a equipe da clínica. Precisa de ajuda? Fale com a coordenação.
+            Versão 1.0
           </p>
         </div>
       </section>
